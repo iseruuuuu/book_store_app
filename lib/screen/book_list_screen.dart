@@ -158,23 +158,18 @@ class _BookListScreenState extends State<BookListScreen> {
                       },
                       child: ListTile(
                         contentPadding: const EdgeInsets.only(
-                          left: 15,
+                          top: 10,
+                          bottom: 10,
+                          left: 20,
                           right: 10,
-                          top: 5,
-                          bottom: 5,
                         ),
                         key: ValueKey(index),
-                        title: Row(
-                          children: [
-                            const SizedBox(width: 15),
-                            Text(
-                              item.bookTitle,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
+                        title: Text(
+                          item.bookTitle,
+                          style: const TextStyle(
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         trailing: const Icon(
                           Icons.list,

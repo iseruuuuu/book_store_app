@@ -55,6 +55,10 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                       : BorderItem.borderOther(),
                                 ),
                                 child: ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                    horizontal: 15,
+                                  ),
                                   key: ValueKey(index),
                                   title: Text(
                                     '${item.bookCount} 巻',
@@ -64,17 +68,20 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                       fontSize: 30,
                                     ),
                                   ),
-                                  trailing: Switch(
-                                    value: item.isHave,
-                                    onChanged: (isHave) {
-                                      setState(() {
-                                        _store.updateBook(
-                                          id: widget.book!.id,
-                                          isHave: isHave,
-                                          bookDetail: item,
-                                        );
-                                      });
-                                    },
+                                  trailing: Transform.scale(
+                                    scale: 1.5,
+                                    child: Switch(
+                                      value: item.isHave,
+                                      onChanged: (isHave) {
+                                        setState(() {
+                                          _store.updateBook(
+                                            id: widget.book!.id,
+                                            isHave: isHave,
+                                            bookDetail: item,
+                                          );
+                                        });
+                                      },
+                                    ),
                                   ),
                                 ),
                               );
