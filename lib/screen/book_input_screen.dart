@@ -1,6 +1,9 @@
 import 'package:book_store_app/model/book.dart';
 import 'package:book_store_app/state/book_list_store.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class BookInputScreen extends StatefulWidget {
   final Book? book;
@@ -29,121 +32,152 @@ class _BookInputScreenState extends State<BookInputScreen> {
     _isCreateBook = book == null;
   }
 
+  void openDialog() {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: MediaQuery.of(context).size.height / 3,
+          padding: EdgeInsets.zero,
+          color: CupertinoColors.systemBackground.resolveFrom(context),
+          child: SafeArea(
+            top: false,
+            child: CupertinoPicker(
+              itemExtent: 40,
+              onSelectedItemChanged: (int selectedItem) {
+                setState(() {
+                  _bookCount = selectedItem;
+                });
+              },
+              children: List<Widget>.generate(
+                205,
+                (int index) {
+                  return Center(
+                    child: Text(
+                      index.toString(),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void shackBar() {
+    showTopSnackBar(
+      context,
+      const CustomSnackBar.error(
+        message: "本の名前 or 巻数の入力をしてください",
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text(_isCreateBook ? '本の追加' : '本の更新'),
         elevation: 0,
       ),
-      body: CustomScrollView(
-        scrollDirection: Axis.vertical,
-        slivers: [
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: Padding(
-              padding: const EdgeInsets.all(30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  TextField(
-                    maxLength: 12,
-                    autofocus: true,
-                    decoration: const InputDecoration(
-                      labelText: "本の名前",
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.blue,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.blue,
-                        ),
-                      ),
+      body: Padding(
+        padding: const EdgeInsets.all(30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            SingleChildScrollView(
+              child: TextField(
+                maxLength: 12,
+                autocorrect: false,
+                decoration: const InputDecoration(
+                  labelText: "本の名前",
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.blue,
                     ),
-                    controller: TextEditingController(text: _bookTitle),
-                    onChanged: (String value) {
-                      _bookTitle = value;
-                    },
                   ),
-                  TextField(
-                    autofocus: true,
-                    decoration: const InputDecoration(
-                      labelText: "巻数",
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.blue,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.blue,
-                        ),
-                      ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.blue,
                     ),
-                    controller: TextEditingController(text: _bookCount.toString()),
-                    onChanged: (value) {
-                      _bookCount = int.parse(value);
-                    },
                   ),
-                  Column(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        height: 60,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_isCreateBook) {
-                              _store.add(
-                                _bookTitle,
-                                _bookCount,
-                              );
-                            } else {
-                              _store.update(widget.book!, _bookTitle);
-                            }
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text(
-                            '追加',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 50),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 60,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.white,
-                            side: const BorderSide(
-                              color: Colors.blue,
-                            ),
-                          ),
-                          child: const Text(
-                            "キャンセル",
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
+                controller: TextEditingController(text: _bookTitle),
+                onChanged: (String value) {
+                  _bookTitle = value;
+                },
               ),
             ),
-          ),
-        ],
+            GestureDetector(
+              onTap: () {
+                openDialog();
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Colors.blue,
+                    width: 2,
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: const [
+                        Icon(Icons.arrow_drop_down, size: 60),
+                      ],
+                    ),
+                    Center(
+                      child: Text(
+                        '$_bookCount',
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              height: 60,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_isCreateBook) {
+                    if (_bookCount == 0) {
+                      shackBar();
+                    } else {
+                      _store.add(
+                        _bookTitle,
+                        _bookCount,
+                      );
+                      Navigator.of(context).pop();
+                    }
+                  } else {
+                    _store.update(widget.book!, _bookTitle);
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: const Text(
+                  '追加',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
