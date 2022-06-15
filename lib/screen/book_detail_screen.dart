@@ -27,11 +27,6 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -62,19 +57,24 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                                 child: ListTile(
                                   key: ValueKey(index),
                                   title: Text(
-                                    item.bookCount.toString() + ' 巻',
+                                    '${item.bookCount} 巻',
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 30,
                                     ),
                                   ),
-                                  trailing: Text(
-                                    item.isHave.toString(),
-                                    style: const TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  trailing: Switch(
+                                    value: item.isHave,
+                                    onChanged: (isHave) {
+                                      setState(() {
+                                        _store.updateBook(
+                                          id: widget.book!.id,
+                                          isHave: isHave,
+                                          bookDetail: item,
+                                        );
+                                      });
+                                    },
                                   ),
                                 ),
                               );

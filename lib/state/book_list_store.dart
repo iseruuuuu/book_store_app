@@ -104,6 +104,11 @@ class BookListStore {
     save();
   }
 
+  void updateBook({required BookDetail bookDetail, required int id, required bool isHave}) {
+    bookDetail.isHave = isHave;
+    saveCard(id.toString());
+  }
+
   void delete({required Book book}) {
     deleteAllCard(index: book.id);
     _list.remove(book);
